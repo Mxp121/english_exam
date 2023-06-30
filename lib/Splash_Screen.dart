@@ -2,6 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
+void main() {
+  runApp(MaterialApp(
+    home: SplashScreen(),
+  ));
+}
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -16,15 +22,15 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
+        AnimationController(vsync: this, duration: Duration(seconds: 7));
     _animation =
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
     _animationController.repeat(reverse: true);
 
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 10), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => MainPage(),
+          builder: (BuildContext context) => QuizLevelsScreen(),
         ),
       );
     });
@@ -80,4 +86,3 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 }
-

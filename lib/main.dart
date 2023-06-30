@@ -11,46 +11,45 @@ class MyApp extends StatelessWidget {
       title: 'English Quiz',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainPage(),
+      home: QuizLevelsScreen(),
     );
   }
 }
 
-class MainPage extends StatelessWidget {
+class QuizLevelsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> quizLevels = [
     {
       'title': 'Beginner',
-      'subtitle': 'Level 1 - 10 questions',
+      'subtitle': 'Level 1 - 10 Questions',
       'color': Colors.blue,
       'progress': 0.5,
       'levels': [
-        {'title': 'Level 1', 'subtitle': '10 questions'},
-        {'title': 'Level 2', 'subtitle': '15 questions'},
-        {'title': 'Level 3', 'subtitle': '20 questions'},
+        {'title': 'Level 1', 'subtitle': '10 Questions'},
+        {'title': 'Level 2', 'subtitle': '15 Questions'},
+        {'title': 'Level 3', 'subtitle': '20 Questions'},
       ],
     },
     {
       'title': 'Intermediate',
-      'subtitle': 'Level 2 - 20 questions',
+      'subtitle': 'Level 2 - 20 Questions',
       'color': Colors.green,
       'progress': 0.2,
       'levels': [
-        {'title': 'Level 1', 'subtitle': '20 questions'},
-        {'title': 'Level 2', 'subtitle': '25 questions'},
-        {'title': 'Level 3', 'subtitle': '30 questions'},
+        {'title': 'Level 1', 'subtitle': '20 Questions'},
+        {'title': 'Level 2', 'subtitle': '25 Questions'},
+        {'title': 'Level 3', 'subtitle': '30 Questions'},
       ],
     },
     {
       'title': 'Advanced',
-      'subtitle': 'Level 3 - 30 questions',
+      'subtitle': 'Level 3 - 30 Questions',
       'color': Colors.red,
       'progress': 0.8,
       'levels': [
-        {'title': 'Level 1', 'subtitle': '30 questions'},
-        {'title': 'Level 2', 'subtitle': '35 questions'},
-        {'title': 'Level 3', 'subtitle': '40 questions'},
+        {'title': 'Level 1', 'subtitle': '30 Questions'},
+        {'title': 'Level 2', 'subtitle': '35 Questions'},
+        {'title': 'Level 3', 'subtitle': '40 Questions'},
       ],
     },
   ];
@@ -66,45 +65,78 @@ class MainPage extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return Card(
             margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: ExpansionTile(
-              title: Text(
-                quizLevels[index]['title'],
-                style: TextStyle(fontSize: 24.0),
-              ),
-              subtitle: Text(
-                quizLevels[index]['subtitle'],
-                style: TextStyle(fontSize: 16.0),
-              ),
-              leading: Icon(
-                Icons.school,
-                color: quizLevels[index]['color'],
-                size: 48.0,
-              ),
-              children: List.generate(
-                quizLevels[index]['levels'].length,
-                    (levelIndex) {
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => QuizLevelScreen(
-                            levelTitle: quizLevels[index]['levels'][levelIndex]['title'],
-                            levelSubtitle: quizLevels[index]['levels'][levelIndex]['subtitle'],
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => QuizLevelScreen(
+                    levelTitle: quizLevels[index]['title'],
+                    levelSubtitle: quizLevels[index]['subtitle'],
+                    levels: quizLevels[index]['levels'],
+                  ),
+                ));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: 150.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4.0),
+                        topRight: Radius.circular(4.0),
+                      ),
+                      color: quizLevels[index]['color'],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          quizLevels[index]['title'],
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
-                      );
-                    },
-                    title: Text(
-                      quizLevels[index]['levels'][levelIndex]['title'],
-                      style: TextStyle(fontSize: 18.0),
+                        SizedBox(height: 8.0),
+                        Text(
+                          quizLevels[index]['subtitle'],
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    subtitle: Text(
-                      quizLevels[index]['levels'][levelIndex]['subtitle'],
-                      style: TextStyle(fontSize: 14.0),
+                  ),
+                  Container(
+                    height: 50.0,
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(4.0),
+                        bottomRight: Radius.circular(4.0),
+                      ),
+                      color: Colors.grey[200],
                     ),
-                  );
-                },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${quizLevels[index]['progress']*100}% Complete',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: quizLevels[index]['color'],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -117,8 +149,13 @@ class MainPage extends StatelessWidget {
 class QuizLevelScreen extends StatelessWidget {
   final String levelTitle;
   final String levelSubtitle;
+  final List<Map<String, String>> levels;
 
-  QuizLevelScreen({required this.levelTitle, required this.levelSubtitle});
+  QuizLevelScreen({
+    required this.levelTitle,
+    required this.levelSubtitle,
+    required this.levels,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -126,23 +163,102 @@ class QuizLevelScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(levelTitle),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              levelSubtitle,
-              style: TextStyle(fontSize: 24.0),
+      body: Column(
+        children: [
+          Container(
+            height: 150.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(8.0),
+                bottomRight: Radius.circular(8.0),
+              ),
+              color: Colors.blue,
             ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                // Code to start the quiz goes here
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  levelTitle,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  levelSubtitle,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: levels.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => QuizScreen(
+                          levelTitle: levelTitle,
+                          quizTitle: levels[index]['title']!,
+                        ),
+                      ));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            levels[index]['title']!,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            levels[index]['subtitle']!,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               },
-              child: Text('Start Quiz'),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuizScreen extends StatelessWidget {
+  final String levelTitle;
+  final String quizTitle;
+
+  QuizScreen({required this.levelTitle, required this.quizTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('$levelTitle - $quizTitle'),
+      ),
+      body: Center(
+        child: Text('Quiz Screen'),
       ),
     );
   }
